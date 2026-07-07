@@ -62,7 +62,7 @@ loss_TM(3,2) = plotData(F, name);
 p_TE = polyfit(loss_TE(:,1), loss_TE(:,2),1);
 p_TM = polyfit(loss_TM(:,1), loss_TM(:,2),1);
 
-dummy_lengths = linspace(0,25); %mm
+dummy_lengths = linspace(0,25,25); %mm
 lin_fit_TE = polyval(p_TE, dummy_lengths);
 lin_fit_TM = polyval(p_TM, dummy_lengths);
 
@@ -92,11 +92,6 @@ fprintf('Waveguide loss for TE is: %f dBm/mm.\n', p_TE(1));
 fprintf('Waveguide loss for TM is: %f dBm/mm.\n', p_TM(1));
 fprintf('Insertion loss of both edge couplers for TE is: %f dBm.\n', p_TE(2));
 fprintf('Insertion loss of both edge couplers for TM is: %f dBm.\n', p_TM(2));
-
-fprintf('\n');
-fprintf('\n');
-
-T_TE = table(x,lin_fit_TE,f,lin_fit_TE-f,'VariableNames',{'X','Y','Fit','FitError'})
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
