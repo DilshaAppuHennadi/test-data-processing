@@ -9,12 +9,12 @@
 clear all
 close all
 
-A = 'PHC_A390NM_R99NM_N28.dat';
-name = 'PhC W1 a=390nm, r=98nm TE v1';
+A = 'Jul_03_2026/PBG/a390_r118_nx25_0/W1_A390NM_R118NM_N25_TE_0.dat';
+name = 'PhC W1 a=390nm, r=118nm TE v1';
 plotData(A, name)
 
-B = 'PHC_A390NM_R99NM_N28_TM.dat';
-name = 'PhC W1 a=390nm, r=98nm TM v1';
+B = 'Jul_03_2026/PBG/a390_r118_nx25_0/W1_A390NM_R118NM_N25_TM_0.dat';
+name = 'PhC W1 a=390nm, r=118nm TM v1';
 plotData(B, name)
 
 function plotData(filename, name)

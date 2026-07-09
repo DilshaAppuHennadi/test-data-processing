@@ -8,33 +8,33 @@
 clear all
 close all
 
-TEdir = 'Khaled/PBS_A400NM_R98NM_N25/PBS_A400NM_R98NM_N25_0_TE_DIR.dat';
-TEadj = 'Khaled/PBS_A400NM_R98NM_N25/PBS_A400NM_R98NM_N25_0_TE_ADJ.dat';
-TMdir = 'Khaled/PBS_A400NM_R98NM_N25/PBS_A400NM_R98NM_N25_0_TM_DIR.dat';
-TMadj = 'Khaled/PBS_A400NM_R98NM_N25/PBS_A400NM_R98NM_N25_0_TM_ADJ.dat';
-name = 'PBS (a=400nm, r=98nm, n_x=25)';
-plotData(TEdir, TEadj, TMdir, TMadj, name)
+TEdir = 'Jul_03_2026/PBS/PBS_a390_r108_nx25_0/PBS_A390NM_R108NM_N25_TE_DIR_0.dat';
+TEadj = 'Jul_03_2026/PBS/PBS_a390_r108_nx25_0/PBS_A390NM_R108NM_N25_TE_ADJ_0.dat';
+TMdir = 'Jul_03_2026/PBS/PBS_a390_r108_nx25_0/PBS_A390NM_R108NM_N25_TM_DIR_0.dat';
+TMadj = 'Jul_03_2026/PBS/PBS_a390_r108_nx25_0/PBS_A390NM_R108NM_N25_TM_ADJ_0.dat';
+name = 'PBS (a=390nm, r=108nm, n_x=25)';
+plotPBSData(TEdir, TEadj, TMdir, TMadj, name)
 
-function plotData(TEd, TEa, TMd, TMa, name)
+function plotPBSData(TEd, TEa, TMd, TMa, name)
     A = importdata(TEd);
     lambda_nm = A(:,1);
     power_TE_dir = A(:,2); % mW
-    powerdB_TE_dir = 10*log10(power_TE_dir); % dBm
+    powerdB_TE_dir = 10*log10(power_TE_dir) - (-1); % dBm
 
     B = importdata(TEa);
     lambda_nm = B(:,1);
     power_TE_adj = B(:,2); % mW
-    powerdB_TE_adj = 10*log10(power_TE_adj); % dBm
+    powerdB_TE_adj = 10*log10(power_TE_adj) - (-1); % dBm
 
     C = importdata(TMd);
     lambda_nm = C(:,1);
     power_TM_dir = C(:,2); % mW
-    powerdB_TM_dir = 10*log10(power_TM_dir); % dBm
+    powerdB_TM_dir = 10*log10(power_TM_dir) - (-1); % dBm
 
     D = importdata(TMa);
     lambda_nm = D(:,1);
     power_TM_adj = D(:,2); % mW
-    powerdB_TM_adj = 10*log10(power_TM_adj); % dBm
+    powerdB_TM_adj = 10*log10(power_TM_adj) - (-1); % dBm
 
     % Plot wavelength sweep in dBm
     figure
@@ -55,17 +55,18 @@ function plotData(TEd, TEa, TMd, TMa, name)
     %fprintf('The power for %s at 1550nm is: %f.\n', name, T_1550);
 
     % Calculate ER
-    % ER(TE) = 10*log10(TE_dir/TE_adj)
-    % ER(TM) = 10*log10(TM_adj/TM_dir)
+    % ER_TE = 10*log10(power_TE_dir./power_TE_adj);
+    % ER_TM = 10*log10(power_TM_adj./power_TM_dir);
 
-    ER_TE = 10*log10(power_TE_dir./power_TE_adj);
-    ER_TM = 10*log10(power_TM_adj./power_TM_dir);
+    ER_TE = powerdB_TE_dir-powerdB_TE_adj;
+    ER_TM = powerdB_TM_adj-powerdB_TM_dir;
 
     figure
     plot(lambda_nm, ER_TE)
     hold on
     plot(lambda_nm, ER_TM)
     hold off
+    yline(0,'LineWidth',2)
     xlabel('Wavelength (nm)')
     ylabel('Extinction Ratio (dB)')
     legend('TE', 'TM')
