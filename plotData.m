@@ -19,7 +19,7 @@ function plotData(PhCTE, PhCTM, W1TE, W1TM, name)
     lambda_nm = TMLoss(:,1); % nm
     WgLoss_TM = TMLoss(:,2); % dB/mm
     WgLoss_TM = WgLoss_TM*WgLength; % dB
-    InLoss_TM = TELoss(:,3); % dB
+    InLoss_TM = TMLoss(:,3); % dB
 
     figure
     subplot(2,1,1) % waveguide loss for TE and TM
