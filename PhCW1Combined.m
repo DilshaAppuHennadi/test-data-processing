@@ -10,14 +10,14 @@ clear all
 close all
 
 % Import pure PhC data
-PhC_TE = 'Jul_03_2026/PhC/a390_r098_nx25_0/PHC_A390NM_R98NM_N25_TE_0.dat';
+PhC_TE = 'Jul_03_2026/PhC/a390_r98_nx25_0/PHC_A390NM_R98NM_N25_TE_0.dat';
 
-PhC_TM = 'Jul_03_2026/PhC/a390_r098_nx25_0/PHC_A390NM_R98NM_N25_TM_0.dat';
+PhC_TM = 'Jul_03_2026/PhC/a390_r98_nx25_0/PHC_A390NM_R98NM_N25_TM_0.dat';
 
 % Import W1 data
-W1_TE = 'Jul_03_2026/PBG/a390_r098_nx25_0/W1_A390NM_R98NM_N25_TE_0.dat';
+W1_TE = 'Jul_03_2026/PBG/a390_r98_nx25_0/W1_A390NM_R98NM_N25_TE_0.dat';
 
-W1_TM = 'Jul_03_2026/PBG/a390_r098_nx25_0/W1_A390NM_R98NM_N25_TM_0.dat';
+W1_TM = 'Jul_03_2026/PBG/a390_r98_nx25_0/W1_A390NM_R98NM_N25_TM_0.dat';
 
 name = 'a=390nm, r=98nm v1';
 
