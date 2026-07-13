@@ -100,40 +100,6 @@ outputTM = [lambda_nm, lossesTM];
 writematrix(outputTE, 'lossesTE_air.dat');
 writematrix(outputTM, 'lossesTM_air.dat');
 
-% p_TE = polyfit(loss_TE(:,1), loss_TE(:,2),1);
-% p_TM = polyfit(loss_TM(:,1), loss_TM(:,2),1);
-% 
-% dummy_lengths = linspace(0,25,25); %mm
-% lin_fit_TE = polyval(p_TE, dummy_lengths);
-% lin_fit_TM = polyval(p_TM, dummy_lengths);
-
-% subplot(2,1,1);
-% plot(loss_TE(:,1), loss_TE(:,2),'o')
-% hold on
-% plot(dummy_lengths,lin_fit_TE)
-% hold off
-% legend('Measured','Fitted')
-% xlabel('Waveguide length (mm)')
-% ylabel('Power (dBm)')
-% title('TE')
-% 
-% subplot(2,1,2);
-% plot(loss_TM(:,1), loss_TM(:,2),'o')
-% hold on
-% plot(dummy_lengths,lin_fit_TM)
-% hold off
-% legend('Measured','Fitted')
-% xlabel('Waveguide length (mm)')
-% ylabel('Power (dBm)')
-% title('TM')
-% 
-% sgtitle('Transmission (1550nm) variation with waveguide length')
-% 
-% fprintf('Waveguide loss for TE is: %f dBm/mm.\n', p_TE(1));
-% fprintf('Waveguide loss for TM is: %f dBm/mm.\n', p_TM(1));
-% fprintf('Insertion loss of both edge couplers for TE is: %f dBm.\n', p_TE(2));
-% fprintf('Insertion loss of both edge couplers for TM is: %f dBm.\n', p_TM(2));
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [compPowdBm, wavelengths] = plotData(filename, name)
