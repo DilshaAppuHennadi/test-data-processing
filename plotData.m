@@ -1,5 +1,6 @@
 function plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
 
+    % Load PhC data files--------------------------------------------------
     if ~isfile(PhCTE)
         error('openMyFile:FileNotFound', ...
             'File does not exist: %s', PhCTE);
@@ -18,6 +19,7 @@ function plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
     power_PhC_TM = B(:,2); % mW
     powerdB_PhC_TM = 10*log10(power_PhC_TM) - (-1) - TM_wg - TM_in; % dBm
     
+    % Load line-defect data files------------------------------------------
     if ~isfile(W1TE)
         error('openMyFile:FileNotFound', ...
             'File does not exist: %s', W1TE);
@@ -37,7 +39,12 @@ function plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
     power_W1_TM = D(:,2); % mW
     powerdB_W1_TM = 10*log10(power_W1_TM) - (-1) - TM_wg - TM_in; % dBm
 
-    % Plot wavelength sweep in dBm
+    % Curve fit for data---------------------------------------------------
+    [fitTE_PhC, fitTM_PhC] = DataFit(powerdB_PhC_TE, powerdB_PhC_TM, lambda_nm, strcat(name, ' PhC'));
+    [fitTE_W1, fitTM_W1] = DataFit(powerdB_W1_TE, powerdB_W1_TM, lambda_nm, strcat(name, ' W1'));
+
+    % Plot wavelength sweep in dBm-----------------------------------------
+    % TE Measured
     figure
     plot(lambda_nm, powerdB_PhC_TE)
     hold on
@@ -48,6 +55,18 @@ function plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
     legend('pure crystal', 'line defect')
     title(strcat(name, ' TE'))
 
+    % TE Fitted
+    figure
+    plot(lambda_nm, fitTE_PhC, 'LineWidth', 2)
+    hold on
+    plot(lambda_nm, fitTE_W1, 'LineWidth', 2)
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Fitted Power (dBm)')
+    legend('pure crystal', 'line defect')
+    title(strcat(name, ' TE'))
+
+    % TM Measured
     figure
     plot(lambda_nm, powerdB_PhC_TM)
     hold on
@@ -58,8 +77,34 @@ function plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
     legend('pure crystal', 'line defect')
     title(strcat(name, ' TM'))
 
-    % Pull transmission at 1550nm
-    % later version of script: return this transmission value
-    % T_1550 = powerdB(find(lambda_nm == 1550));
-    % fprintf('The power for %s at 1550nm is: %f.\n', name, T_1550);
+    % TM Fitted
+    figure
+    plot(lambda_nm, fitTM_PhC, 'LineWidth', 2)
+    hold on
+    plot(lambda_nm, fitTM_W1, 'LineWidth', 2)
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Fitted Power (dBm)')
+    legend('pure crystal', 'line defect')
+    title(strcat(name, ' TM'))
+
+    % Calculate W1 loss at 1550 nm-----------------------------------------
+    lambda0 = 1550; % nm
+    [~, idx] = min(abs(lambda_nm - lambda0));   % index of closest match
+
+    TE_1550 = powerdB_W1_TE(idx);
+    fprintf('TE power loss from the W1 waveguide at 1550 nm is %d dB\n', TE_1550);
+
+    TM_1550 = powerdB_W1_TM(idx);
+    fprintf('TM power loss from the W1 waveguide at 1550 nm is %d dB\n', TM_1550);
+
+    % % Calculate W1 loss at 1550 nm-----------------------------------------
+    % lambda0 = 1550; % nm
+    % [~, idx] = min(abs(lambda_nm - lambda0));   % index of closest match
+    % 
+    % TE_1550 = powerdB_W1_TE(idx);
+    % fprintf('TE power loss from the W1 waveguide at 1550 nm is %d dB\n', TE_1550);
+    % 
+    % TM_1550 = powerdB_W1_TM(idx);
+    % fprintf('TM power loss from the W1 waveguide at 1550 nm is %d dB\n', TM_1550);
 end

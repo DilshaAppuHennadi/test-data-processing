@@ -59,11 +59,11 @@ function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name)
     title(strcat('PBS Transmission (', name,')'))
 
     figure
-    plot(lambda_nm, fitTE_dir, 'LineWidth', 2)
+    plot(lambda_nm, fitTE_dir)
     hold on
-    plot(lambda_nm, fitTE_adj, 'LineWidth', 2)
-    plot(lambda_nm, fitTM_dir, 'LineWidth', 2)
-    plot(lambda_nm, fitTM_adj, 'LineWidth', 2)
+    plot(lambda_nm, fitTE_adj)
+    plot(lambda_nm, fitTM_dir)
+    plot(lambda_nm, fitTM_adj)
     hold off
     xlabel('Wavelength (nm)')
     ylabel('Fitted Power (dBm)')
@@ -84,18 +84,7 @@ function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name)
     legend('TE', 'TM')
     title('Splitting Ratio')
 
-    ER_TE = fitTE_dir-fitTE_adj;
-    ER_TM = fitTM_adj-fitTM_dir;
-
-    figure
-    plot(lambda_nm, ER_TE, 'LineWidth', 2)
-    hold on
-    plot(lambda_nm, ER_TM, 'LineWidth', 2)
-    hold off
-    yline(0,'LineWidth',2)
-    xlabel('Wavelength (nm)')
-    ylabel('Extinction Ratio (dB) from fit')
-    legend('TE', 'TM')
-    title('Splitting Ratio')
+    ER_TE = powerdB_TE_dir-powerdB_TE_adj;
+    ER_TM = powerdB_TM_adj-powerdB_TM_dir;
 
 end
