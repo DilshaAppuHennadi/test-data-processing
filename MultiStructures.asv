@@ -10,6 +10,12 @@ a = 390;
 n = 25;
 copy = 0;
 
+% Calculate wg length
+Lwg = wgLength(a, n); %mm
+
+% Obtain waveguide and insertion losses for chip
+[TE_wg,TE_in,TM_wg,TM_in] = LossesTETM(Lwg);
+
 folder = 'Jul_03_2026';
 
 latticeParams = strcat('a=',string(a),'nm, r=',string(r),'nm, n_x=',string(n));
@@ -28,5 +34,5 @@ TEadj = strcat(folder,'/PBS/PBS_a',string(a),'_r',string(r),'_nx',string(n),'_',
 TMdir = strcat(folder,'/PBS/PBS_a',string(a),'_r',string(r),'_nx',string(n),'_',string(copy),'/PBS_A',string(a),'NM_R',string(r),'NM_N',string(n),'_TM_DIR_',string(copy),'.dat');
 TMadj = strcat(folder,'/PBS/PBS_a',string(a),'_r',string(r),'_nx',string(n),'_',string(copy),'/PBS_A',string(a),'NM_R',string(r),'NM_N',string(n),'_TM_ADJ_',string(copy),'.dat');
 
-plotData(PhC_TE, PhC_TM, W1_TE, W1_TM, latticeParams)
+plotData(TE_wg,TE_in,TM_wg,TM_in, PhC_TE, PhC_TM, W1_TE, W1_TM, latticeParams)
 plotPBSData(TEdir, TEadj, TMdir, TMadj, latticeParams)

@@ -1,4 +1,4 @@
-function plotPBSData(TEd, TEa, TMd, TMa, name)
+function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name)
 
     if ~isfile(TEd)
         error('openMyFile:FileNotFound', ...
@@ -8,7 +8,7 @@ function plotPBSData(TEd, TEa, TMd, TMa, name)
     A = importdata(TEd);
     lambda_nm = A(:,1);
     power_TE_dir = A(:,2); % mW
-    powerdB_TE_dir = 10*log10(power_TE_dir) - (-1); % dBm
+    powerdB_TE_dir = 10*log10(power_TE_dir) - (-1) - TE_wg - TE_in; % dBm
 
     if ~isfile(TEa)
         error('openMyFile:FileNotFound', ...
@@ -18,7 +18,7 @@ function plotPBSData(TEd, TEa, TMd, TMa, name)
     B = importdata(TEa);
     lambda_nm = B(:,1);
     power_TE_adj = B(:,2); % mW
-    powerdB_TE_adj = 10*log10(power_TE_adj) - (-1); % dBm
+    powerdB_TE_adj = 10*log10(power_TE_adj) - (-1) - TE_wg - TE_in; % dBm
 
     if ~isfile(TMd)
         error('openMyFile:FileNotFound', ...
@@ -28,7 +28,7 @@ function plotPBSData(TEd, TEa, TMd, TMa, name)
     C = importdata(TMd);
     lambda_nm = C(:,1);
     power_TM_dir = C(:,2); % mW
-    powerdB_TM_dir = 10*log10(power_TM_dir) - (-1); % dBm
+    powerdB_TM_dir = 10*log10(power_TM_dir) - (-1) - TM_wg - TM_in; % dBm
 
     if ~isfile(TMa)
         error('openMyFile:FileNotFound', ...
@@ -38,7 +38,7 @@ function plotPBSData(TEd, TEa, TMd, TMa, name)
     D = importdata(TMa);
     lambda_nm = D(:,1);
     power_TM_adj = D(:,2); % mW
-    powerdB_TM_adj = 10*log10(power_TM_adj) - (-1); % dBm
+    powerdB_TM_adj = 10*log10(power_TM_adj) - (-1) - TM_wg - TM_in; % dBm
 
     % Plot wavelength sweep in dBm
     figure
