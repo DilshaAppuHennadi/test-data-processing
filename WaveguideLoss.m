@@ -22,45 +22,69 @@ clc
 
 %% 3mm Waveguide (shortest)
 
-% A = 'Jul_03_2026/WGs/short_1_890um/LOSS_SHORT_1_TE.dat';
+A = 'Jul_03_2026/WGs/short_1_890um/LOSS_SHORT_1_TE.dat';
 % A = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_SHORT_1_TE.dat';
-A = 'Jul_03_2026/AIR/LOSS_SHORT_1_TE.dat';
+% A = 'Jul_03_2026/AIR/LOSS_SHORT_1_TE.dat';
 name = 'SHORT TE';
 compPow_short_TE = plotData(A, name);
 
-% B = 'Jul_03_2026/WGs/short_1_890um/LOSS_SHORT_1_TM.dat';
+B = 'Jul_03_2026/WGs/short_1_890um/LOSS_SHORT_1_TM.dat';
 % B = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_SHORT_1_TM.dat';
-B = 'Jul_03_2026/AIR/LOSS_SHORT_1_TM.dat';
+% B = 'Jul_03_2026/AIR/LOSS_SHORT_1_TM.dat';
 name = 'SHORT TM';
 compPow_short_TM = plotData(B, name);
 
 %% 3mm Waveguide (medium)
 
-% C = 'Jul_03_2026/WGs/med_1_2776um/LOSS_MED_1_TE.dat';
+C = 'Jul_03_2026/WGs/med_1_2776um/LOSS_MED_1_TE.dat';
 % C = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_MED_1_TE.dat';
-C = 'Jul_03_2026/AIR/LOSS_MED_1_TE.dat';
+% C = 'Jul_03_2026/AIR/LOSS_MED_1_TE.dat';
 name = 'MED TE';
 compPow_med_TE = plotData(C, name);
 
-% D = 'Jul_03_2026/WGs/med_1_2776um/LOSS_MED_1_TM.dat';
+D = 'Jul_03_2026/WGs/med_1_2776um/LOSS_MED_1_TM.dat';
 % D = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_MED_1_TM.dat';
-D = 'Jul_03_2026/AIR/LOSS_MED_1_TM.dat';
+% D = 'Jul_03_2026/AIR/LOSS_MED_1_TM.dat';
 name = 'MED TM';
 compPow_med_TM = plotData(D, name);
 
 %% 3mm Waveguide (longest)
 
-% E = 'Jul_03_2026/WGs/long_1_6499um/LOSS_LONG_1_TE.dat';
+E = 'Jul_03_2026/WGs/long_1_6499um/LOSS_LONG_1_TE.dat';
 % E = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_LONG_1_TE.dat';
-E = 'Jul_03_2026/AIR/LOSS_LONG_1_TE.dat';
+% E = 'Jul_03_2026/AIR/LOSS_LONG_1_TE.dat';
 name = 'LONG TE';
 compPow_long_TE = plotData(E, name);
 
-% F = 'Jul_03_2026/WGs/long_1_6499um/LOSS_LONG_1_TM.dat';
-F = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_LONG_1_TM.dat';
-% F = 'Jul_03_2026/AIR/LOSS_LONG_1_TM.dat';
+F = 'Jul_03_2026/WGs/long_1_6499um/LOSS_LONG_1_TM.dat';
+% F = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_LONG_1_TM.dat';
+% % F = 'Jul_03_2026/AIR/LOSS_LONG_1_TM.dat';
 name = 'LONG TM';
 [compPow_long_TM, lambda_nm] = plotData(F, name);
+
+%% Plot raw data together
+figure
+subplot(2,1,1);
+hold on
+plot(lambda_nm, compPow_short_TE)
+plot(lambda_nm, compPow_med_TE)
+plot(lambda_nm, compPow_long_TE)
+hold off
+xlabel('Wavelength (nm)')
+ylabel('Measured Power (dBm)')
+legend('3 mm','9 mm','21 mm')
+title('TE Transmission')
+
+subplot(2,1,2);
+hold on
+plot(lambda_nm, compPow_short_TM)
+plot(lambda_nm, compPow_med_TM)
+plot(lambda_nm, compPow_long_TM)
+hold off
+xlabel('Wavelength (nm)')
+ylabel('Measured Power (dBm)')
+legend('3 mm','9 mm','21 mm')
+title('TM Transmission')
 
 %% Plot Transmission by waveguide length
 % We perform a polyfit() of the loss data for the three waveguides at
@@ -162,9 +186,9 @@ function [lossTE, lossTM] = loss(wavelengths, sTE, sTM, mTE, mTM, lTE, lTM)
 
             figure
             subplot(2,1,1);
-            plot(x, yTE,'o')
+            plot(x, yTE,'o', 'LineWidth', 2)
             hold on
-            plot(dummy_lengths,lin_fit_TE)
+            plot(dummy_lengths,lin_fit_TE, 'LineWidth', 2)
             hold off
             legend('Measured','Fitted')
             xlabel('Waveguide length (mm)')
@@ -172,9 +196,9 @@ function [lossTE, lossTM] = loss(wavelengths, sTE, sTM, mTE, mTM, lTE, lTM)
             title('TE')
             
             subplot(2,1,2);
-            plot(x, yTM,'o')
+            plot(x, yTM,'o', 'LineWidth', 2)
             hold on
-            plot(dummy_lengths,lin_fit_TM)
+            plot(dummy_lengths,lin_fit_TM, 'LineWidth', 2)
             hold off
             legend('Measured','Fitted')
             xlabel('Waveguide length (mm)')

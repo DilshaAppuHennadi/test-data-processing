@@ -6,7 +6,7 @@ function [outTE, outTM] = DataFit(TE_dBm, TM_dBm, lambda_nm, name)
 %   average for each wavelength. In doing so, the smoothed data set will
 %   contain the same number of points as the original data set.
 
-    windowSize = 500; % number of points in the moving window
+    windowSize = 250; % number of points in the moving window
     TE_smoothed = movmean(TE_dBm, windowSize);
     figure
     plot(lambda_nm, TE_dBm)

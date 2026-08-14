@@ -5,7 +5,11 @@
 clear all
 close all
 
-r = 118;
+set(groot, 'DefaultAxesFontSize', 16);
+set(groot, 'DefaultTextFontSize', 18);
+set(groot, 'DefaultLegendFontSize', 14);
+
+r = 118;%108;%
 a = 390;
 n = 25;
 copy = 0;
@@ -34,5 +38,5 @@ TEadj = strcat(folder,'/PBS/PBS_a',string(a),'_r',string(r),'_nx',string(n),'_',
 TMdir = strcat(folder,'/PBS/PBS_a',string(a),'_r',string(r),'_nx',string(n),'_',string(copy),'/PBS_A',string(a),'NM_R',string(r),'NM_N',string(n),'_TM_DIR_',string(copy),'.dat');
 TMadj = strcat(folder,'/PBS/PBS_a',string(a),'_r',string(r),'_nx',string(n),'_',string(copy),'/PBS_A',string(a),'NM_R',string(r),'NM_N',string(n),'_TM_ADJ_',string(copy),'.dat');
 
-% plotData(TE_wg,TE_in,TM_wg,TM_in, PhC_TE, PhC_TM, W1_TE, W1_TM, latticeParams)
-plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEdir, TEadj, TMdir, TMadj, latticeParams)
+[TE_W1, TM_W1] = plotData(TE_wg,TE_in,TM_wg,TM_in, PhC_TE, PhC_TM, W1_TE, W1_TM, latticeParams);
+plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEdir, TEadj, TMdir, TMadj, latticeParams, TE_W1, TM_W1)

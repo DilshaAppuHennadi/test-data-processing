@@ -1,4 +1,4 @@
-function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name)
+function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name, TE_W1, TM_W1)
 
     % Load PBS data files--------------------------------------------------
     if ~isfile(TEd) % TE dir
@@ -70,6 +70,48 @@ function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name)
     legend('TE DIR','TE ADJ','TM DIR','TM ADJ')
     title(strcat('PBS Transmission (', name,')'))
 
+    % W1 Compensation------------------------------------------------------
+    
+    pass_edge = 1540; %nm (edge of the W1 pass band)
+
+    % locate index of the pass band edge wavelength
+    [~, idx] = min(abs(lambda_nm - pass_edge));
+
+    TE_dir_comp = powerdB_TE_dir(1:idx) - TE_W1(1:idx);
+    TE_adj_comp = powerdB_TE_adj(1:idx) - TE_W1(1:idx);
+    TM_dir_comp = powerdB_TM_dir(1:idx) - TM_W1(1:idx);
+    TM_adj_comp = powerdB_TM_adj(1:idx) - TM_W1(1:idx);
+
+    % Apply moving average
+    [fitTE_dir_comp, fitTM_dir_comp] = DataFit(TE_dir_comp, TM_dir_comp, lambda_nm(1:idx), strcat(name, ' direct - W1 compensated'));
+    [fitTE_adj_comp, fitTM_adj_comp] = DataFit(TE_adj_comp, TM_adj_comp, lambda_nm(1:idx), strcat(name, ' adjacent - W1 compensated'));
+
+    figure
+    plot(lambda_nm(1:idx), TE_dir_comp)
+    hold on
+    plot(lambda_nm(1:idx), TE_adj_comp)
+    plot(lambda_nm(1:idx), TM_dir_comp)
+    plot(lambda_nm(1:idx), TM_adj_comp)
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Measured Power (dBm)')
+    legend('TE DIR','TE ADJ','TM DIR','TM ADJ')
+    title(strcat('PBS Transmission (', name,') with W1 compensation'))
+
+    figure
+    plot(lambda_nm(1:idx), fitTE_dir_comp, 'LineWidth', 2)
+    hold on
+    plot(lambda_nm(1:idx), fitTE_adj_comp, 'LineWidth', 2)
+    plot(lambda_nm(1:idx), fitTM_dir_comp, 'LineWidth', 2)
+    plot(lambda_nm(1:idx), fitTM_adj_comp, 'LineWidth', 2)
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Fitted Power (dBm)')
+    legend('TE DIR','TE ADJ','TM DIR','TM ADJ')
+    title(strcat('PBS Transmission (', name,') with W1 compensation'))
+
+    % ER Calculation and Plotting------------------------------------------
+
     ER_TE = powerdB_TE_dir-powerdB_TE_adj;
     ER_TM = powerdB_TM_adj-powerdB_TM_dir;
 
@@ -97,5 +139,19 @@ function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name)
     ylabel('Extinction Ratio (dB) from fit')
     legend('TE', 'TM')
     title('Splitting Ratio')
+
+    ER_TE_comp = fitTE_dir_comp - fitTE_adj_comp;
+    ER_TM_comp = fitTM_adj_comp - fitTM_dir_comp;
+
+    figure
+    plot(lambda_nm(1:idx), ER_TE_comp, 'LineWidth', 2)
+    hold on
+    plot(lambda_nm(1:idx), ER_TM_comp, 'LineWidth', 2)
+    hold off
+    yline(0,'LineWidth',2)
+    xlabel('Wavelength (nm)')
+    ylabel('Extinction Ratio (dB)')
+    legend('TE', 'TM')
+    title('Splitting Ratio - W1 compensated')
 
 end

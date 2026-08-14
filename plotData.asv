@@ -1,4 +1,4 @@
-function plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
+function [outTE_W1, outTM_W1] = plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
 
     % Load PhC data files--------------------------------------------------
     if ~isfile(PhCTE)
@@ -88,5 +88,23 @@ function plotData(TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
     legend('pure crystal', 'line defect')
     title(strcat(name, ' TM'))
 
-    % Calculate W1 loss at 1550 nm 
+    % Calculate W1 loss at 1550 nm-----------------------------------------
+    lambda0 = 1550; % nm
+    [~, idx] = min(abs(lambda_nm - lambda0));   % index of closest match
+
+    TE_1550 = powerdB_W1_TE(idx);
+    fprintf('TE power loss from the W1 waveguide at 1550 nm is %d dB\n', TE_1550);
+
+    TM_1550 = powerdB_W1_TM(idx);
+    fprintf('TM power loss from the W1 waveguide at 1550 nm is %d dB\n', TM_1550);
+
+    % % Calculate W1 loss at 1550 nm-----------------------------------------
+    % lambda0 = 1550; % nm
+    % [~, idx] = min(abs(lambda_nm - lambda0));   % index of closest match
+    % 
+    % TE_1550 = powerdB_W1_TE(idx);
+    % fprintf('TE power loss from the W1 waveguide at 1550 nm is %d dB\n', TE_1550);
+    % 
+    % TM_1550 = powerdB_W1_TM(idx);
+    % fprintf('TM power loss from the W1 waveguide at 1550 nm is %d dB\n', TM_1550);
 end
