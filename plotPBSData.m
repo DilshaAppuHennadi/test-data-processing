@@ -112,46 +112,59 @@ function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name, TE_W1, T
 
     % ER Calculation and Plotting------------------------------------------
 
-    ER_TE = powerdB_TE_dir-powerdB_TE_adj;
-    ER_TM = powerdB_TM_adj-powerdB_TM_dir;
+    calcER(powerdB_TE_dir, powerdB_TE_adj, powerdB_TM_dir, powerdB_TM_adj, lambda_nm, 'Splitting Ratio - Raw Data')
+
+    calcER(fitTE_dir, fitTE_adj, fitTM_dir, fitTM_adj, lambda_nm, 'Splitting Ratio - Fitted Data')
+
+    calcER(fitTE_dir_comp, fitTE_adj_comp, fitTM_dir_comp, fitTM_adj_comp, lambda_nm(1:idx), 'Splitting Ratio - Fitted Data with W1 Compensation')
+
+    % Compare to Simulations-----------------------------------------------
+
+    sim_TE_dir = readmatrix('W:\dilshaappuhennadi\Thesis\test-data-processing\Simulation_Data\a390_r90\TE_dir');
+    sim_TE_adj = readmatrix("W:\dilshaappuhennadi\Thesis\test-data-processing\Simulation_Data\a390_r90\TE_adj");
+    sim_TM_dir = readmatrix("W:\dilshaappuhennadi\Thesis\test-data-processing\Simulation_Data\a390_r90\TM_dir");
+    sim_TM_adj = readmatrix("W:\dilshaappuhennadi\Thesis\test-data-processing\Simulation_Data\a390_r90\TM_adj");
+    sim_lambda = readmatrix("Simulation_Data\sim_lambda_nm.txt");
+
+    sim_TE_dir = 10*log10(sim_TE_dir(:,2));
+    sim_TE_adj = 10*log10(sim_TE_adj(:,2));
+    sim_TM_dir = 10*log10(sim_TM_dir(:,2));
+    sim_TM_adj = 10*log10(sim_TM_adj(:,2));
+    
+    figure
+    hold on
+    plot(lambda_nm, powerdB_TE_dir)
+    plot(lambda_nm, powerdB_TE_adj)
+    plot(lambda_nm, powerdB_TM_dir)
+    plot(lambda_nm, powerdB_TM_adj)
+    plot(sim_lambda, sim_TE_dir, 'LineWidth', 2)
+    plot(sim_lambda, sim_TE_adj, 'LineWidth', 2)
+    plot(sim_lambda, sim_TM_dir, 'LineWidth', 2)
+    plot(sim_lambda, sim_TM_adj, 'LineWidth', 2)
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Measured Power (dBm)')
+    legend('TE DIR (meas.)','TE ADJ (meas.)','TM DIR (meas.)', ...
+        'TM ADJ (meas.)','TE DIR (sim.)','TE ADJ (sim.)', ...
+        'TM DIR (sim.)','TM ADJ (sim.)')
+    title(strcat('PBS Transmission (', name,')'))
 
     figure
-    plot(lambda_nm, ER_TE)
     hold on
-    plot(lambda_nm, ER_TM)
+    plot(lambda_nm, fitTE_dir, 'LineWidth', 2)
+    plot(lambda_nm, fitTE_adj, 'LineWidth', 2)
+    plot(lambda_nm, fitTM_dir, 'LineWidth', 2)
+    plot(lambda_nm, fitTM_adj, 'LineWidth', 2)
+    plot(sim_lambda, sim_TE_dir, '--', 'LineWidth', 2)
+    plot(sim_lambda, sim_TE_adj, '--', 'LineWidth', 2)
+    plot(sim_lambda, sim_TM_dir, '--', 'LineWidth', 2)
+    plot(sim_lambda, sim_TM_adj, '--', 'LineWidth', 2)
     hold off
-    yline(0,'LineWidth',2)
     xlabel('Wavelength (nm)')
-    ylabel('Extinction Ratio (dB)')
-    legend('TE', 'TM')
-    title('Splitting Ratio')
-
-    ER_TE = fitTE_dir-fitTE_adj;
-    ER_TM = fitTM_adj-fitTM_dir;
-
-    figure
-    plot(lambda_nm, ER_TE, 'LineWidth', 2)
-    hold on
-    plot(lambda_nm, ER_TM, 'LineWidth', 2)
-    hold off
-    yline(0,'LineWidth',2)
-    xlabel('Wavelength (nm)')
-    ylabel('Extinction Ratio (dB) from fit')
-    legend('TE', 'TM')
-    title('Splitting Ratio')
-
-    ER_TE_comp = fitTE_dir_comp - fitTE_adj_comp;
-    ER_TM_comp = fitTM_adj_comp - fitTM_dir_comp;
-
-    figure
-    plot(lambda_nm(1:idx), ER_TE_comp, 'LineWidth', 2)
-    hold on
-    plot(lambda_nm(1:idx), ER_TM_comp, 'LineWidth', 2)
-    hold off
-    yline(0,'LineWidth',2)
-    xlabel('Wavelength (nm)')
-    ylabel('Extinction Ratio (dB)')
-    legend('TE', 'TM')
-    title('Splitting Ratio - W1 compensated')
+    ylabel('Measured Power - Fitted (dBm)')
+    legend('TE DIR (meas.)','TE ADJ (meas.)','TM DIR (meas.)', ...
+        'TM ADJ (meas.)','TE DIR (sim.)','TE ADJ (sim.)', ...
+        'TM DIR (sim.)','TM ADJ (sim.)')
+    title(strcat('PBS Transmission (', name,')'))
 
 end
