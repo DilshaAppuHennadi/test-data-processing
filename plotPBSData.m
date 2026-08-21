@@ -132,39 +132,79 @@ function plotPBSData(TE_wg,TE_in,TM_wg,TM_in, TEd, TEa, TMd, TMa, name, TE_W1, T
     sim_TM_adj = 10*log10(sim_TM_adj(:,2));
     
     figure
+    subplot(2,1,1)
     hold on
     plot(lambda_nm, powerdB_TE_dir)
     plot(lambda_nm, powerdB_TE_adj)
-    plot(lambda_nm, powerdB_TM_dir)
-    plot(lambda_nm, powerdB_TM_adj)
     plot(sim_lambda, sim_TE_dir, 'LineWidth', 2)
     plot(sim_lambda, sim_TE_adj, 'LineWidth', 2)
-    plot(sim_lambda, sim_TM_dir, 'LineWidth', 2)
-    plot(sim_lambda, sim_TM_adj, 'LineWidth', 2)
     hold off
     xlabel('Wavelength (nm)')
-    ylabel('Measured Power (dBm)')
-    legend('TE DIR (meas.)','TE ADJ (meas.)','TM DIR (meas.)', ...
-        'TM ADJ (meas.)','TE DIR (sim.)','TE ADJ (sim.)', ...
-        'TM DIR (sim.)','TM ADJ (sim.)')
-    title(strcat('PBS Transmission (', name,')'))
+    ylabel('Measured Power (mdB)')
+    legend('TE DIR (meas.)','TE ADJ (meas.)','TE DIR (sim.)','TE ADJ (sim.)')
+    title('Comparison of TE Transmission')
+
+    subplot(2,1,2)
+    hold on
+    plot(lambda_nm, powerdB_TM_dir)
+    plot(lambda_nm, powerdB_TM_adj)
+    plot(sim_lambda, sim_TM_dir, 'LineWidth', 2)
+    plot(sim_lambda, sim_TM_adj, 'LineWidth', 2)    
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Measured Power (mdB)')
+    legend('TM DIR (meas.)','TM ADJ (meas.)','TM DIR (sim.)','TM ADJ (sim.)')
+    title('Comparison of TE Transmission')
+
+    figure
+    subplot(2,1,1)
+    hold on
+    plot(lambda_nm, fitTE_dir)
+    plot(lambda_nm, fitTE_adj)
+    plot(sim_lambda, sim_TE_dir, 'LineWidth', 2)
+    plot(sim_lambda, sim_TE_adj, 'LineWidth', 2)
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Measured Power (mdB)')
+    legend('TE DIR (meas.)','TE ADJ (meas.)','TE DIR (sim.)','TE ADJ (sim.)')
+    title('Comparison of TE Transmission')
+
+    subplot(2,1,2)
+    hold on
+    plot(lambda_nm, fitTM_dir)
+    plot(lambda_nm, fitTM_adj)
+    plot(sim_lambda, sim_TM_dir, 'LineWidth', 2)
+    plot(sim_lambda, sim_TM_adj, 'LineWidth', 2)    
+    hold off
+    xlabel('Wavelength (nm)')
+    ylabel('Measured Power (mdB)')
+    legend('TM DIR (meas.)','TM ADJ (meas.)','TM DIR (sim.)','TM ADJ (sim.)')
+    title('Comparison of TE Transmission')
+
+    plotERComp(fitTE_dir,fitTE_adj,fitTM_dir,fitTM_adj,sim_TE_dir,sim_TE_adj,sim_TM_dir,sim_TM_adj,lambda_nm, sim_lambda, strcat('ER Comparison (', name,')'))
+
+end
+
+function plotERComp(TE_dir_m, TE_adj_m, TM_dir_m, TM_adj_m, TE_dir_s, ...
+    TE_adj_s, TM_dir_s, TM_adj_s, lambda_nm, lambda_sim, name)
+%UNTITLED2 Summary of this function goes here
+%   Detailed explanation goes here
+    ER_TE_m = TE_dir_m-TE_adj_m;
+    ER_TM_m = TM_adj_m-TM_dir_m;
+
+    ER_TE_s = TE_dir_s-TE_adj_s;
+    ER_TM_s = TM_adj_s-TM_dir_s;
 
     figure
     hold on
-    plot(lambda_nm, fitTE_dir, 'LineWidth', 2)
-    plot(lambda_nm, fitTE_adj, 'LineWidth', 2)
-    plot(lambda_nm, fitTM_dir, 'LineWidth', 2)
-    plot(lambda_nm, fitTM_adj, 'LineWidth', 2)
-    plot(sim_lambda, sim_TE_dir, '--', 'LineWidth', 2)
-    plot(sim_lambda, sim_TE_adj, '--', 'LineWidth', 2)
-    plot(sim_lambda, sim_TM_dir, '--', 'LineWidth', 2)
-    plot(sim_lambda, sim_TM_adj, '--', 'LineWidth', 2)
+    plot(lambda_nm, ER_TE_m, 'LineWidth', 2)
+    plot(lambda_nm, ER_TM_m, 'LineWidth', 2)
+    plot(lambda_sim, ER_TE_s, '--', 'LineWidth', 2)
+    plot(lambda_sim, ER_TM_s, '--', 'LineWidth', 2)
     hold off
+    yline(0,'LineWidth',2)
     xlabel('Wavelength (nm)')
-    ylabel('Measured Power - Fitted (dBm)')
-    legend('TE DIR (meas.)','TE ADJ (meas.)','TM DIR (meas.)', ...
-        'TM ADJ (meas.)','TE DIR (sim.)','TE ADJ (sim.)', ...
-        'TM DIR (sim.)','TM ADJ (sim.)')
-    title(strcat('PBS Transmission (', name,')'))
-
+    ylabel('Extinction Ratio (dB)')
+    legend('TE (meas.)', 'TM (meas.)', 'TE (sim.)', 'TM (sim.)')
+    title(name)
 end
