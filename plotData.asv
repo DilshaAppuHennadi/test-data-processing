@@ -1,9 +1,9 @@
-function [outTE_W1, outTM_W1] = plotData(sysLoss,TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
+function [outTE_W1, outTM_W1] = plotData(sysTE,TE_wg,TE_in,TM_wg,TM_in, PhCTE, PhCTM, W1TE, W1TM, name)
 
     % Load PhC data files--------------------------------------------------
 
     power_PhC_TE = PhCTE(:,2); % mW
-    powerdB_PhC_TE = 10*log10(power_PhC_TE) + sysLoss(:,2) - TE_wg - TE_in; % dBm
+    powerdB_PhC_TE = 10*log10(power_PhC_TE) + sysTE(:,2) - TE_wg - TE_in; % dBm
 
     power_PhC_TM = PhCTM(:,2); % mW
     powerdB_PhC_TM = 10*log10(power_PhC_TM) - (-1) - TM_wg - TM_in; % dBm
@@ -11,7 +11,7 @@ function [outTE_W1, outTM_W1] = plotData(sysLoss,TE_wg,TE_in,TM_wg,TM_in, PhCTE,
     % Load line-defect data files------------------------------------------
 
     power_W1_TE = W1TE(:,2); % mW
-    powerdB_W1_TE = 10*log10(power_W1_TE) + sysLoss(:,2) - TE_wg - TE_in; % dBm
+    powerdB_W1_TE = 10*log10(power_W1_TE) + sysTE(:,2) - TE_wg - TE_in; % dBm
 
     lambda_nm = W1TM(:,1); % nm
     power_W1_TM = W1TM(:,2); % mW
@@ -32,12 +32,11 @@ function [outTE_W1, outTM_W1] = plotData(sysLoss,TE_wg,TE_in,TM_wg,TM_in, PhCTE,
     ylabel('Measured Power (dBm)')
     legend('pure crystal', 'line defect')
     title(strcat(name, ' TE'))
-    xlim([lambda_nm(1) lambda_nm(end)])
 
     % TE Fitted
     % Line defect-resonant mode at about -1.8dBm, so we place cut-off at
     % -4.8dBm
-    cutOff = -4.5;
+    cutOff = -4.8;
     [~, ind] = min(abs(fitTE_W1 - cutOff)); % locate index closest to 0dB
     x_cutoff = lambda_nm(ind);
 
@@ -45,13 +44,31 @@ function [outTE_W1, outTM_W1] = plotData(sysLoss,TE_wg,TE_in,TM_wg,TM_in, PhCTE,
     plot(lambda_nm, fitTE_PhC, 'LineWidth', 2)
     hold on
     plot(lambda_nm, fitTE_W1, 'LineWidth', 2)
+    ax = gca;
+
+    % Arrow height in data units
+    y_arrow = 0.8 * max(ylim);
+    
+    % Convert data coordinates to normalized figure coordinates
+    axpos = ax.Position;
+    
+    xlims = xlim(ax);
+    ylims = ylim(ax);
+    
+    x1 = axpos(1) + (0 - xlims(1))/diff(xlims)*axpos(3);
+    x2 = axpos(1) + (x_cutoff - xlims(1))/diff(xlims)*axpos(3);
+    
+    yN = axpos(2) + (y_arrow - ylims(1))/diff(ylims)*axpos(4);
+    
+    % Draw double arrow
+    annotation('doublearrow',[x1 x2],[yN yN]);
+    
     hold off
-    xline(lambda_nm(ind),'--', sprintf('Cut-off = %.0f nm', x_cutoff),'LineWidth',2, 'FontSize', 12, 'LabelVerticalAlignment','middle')
+    xline(lambda_nm(ind),'--', sprintf('Cut-off = %.0f nm', x_cutoff),'LineWidth',2, 'FontSize', 12)
     xlabel('Wavelength (nm)')
     ylabel('Power (dBm)')
     legend('pure crystal', 'line defect')
     title(strcat(name, ' TE'))
-    xlim([lambda_nm(1) lambda_nm(end)])
 
     % TM Measured
     figure
@@ -63,7 +80,6 @@ function [outTE_W1, outTM_W1] = plotData(sysLoss,TE_wg,TE_in,TM_wg,TM_in, PhCTE,
     ylabel('Measured Power (dBm)')
     legend('pure crystal', 'line defect')
     title(strcat(name, ' TM'))
-    xlim([lambda_nm(1) lambda_nm(end)])
 
     % TM Fitted
     figure
@@ -75,7 +91,6 @@ function [outTE_W1, outTM_W1] = plotData(sysLoss,TE_wg,TE_in,TM_wg,TM_in, PhCTE,
     ylabel('Power (dBm)')
     legend('pure crystal', 'line defect')
     title(strcat(name, ' TM'))
-    xlim([lambda_nm(1) lambda_nm(end)])
 
     % Calculate W1 loss at 1550 nm-----------------------------------------
     lambda0 = 1550; % nm

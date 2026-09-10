@@ -8,26 +8,26 @@ function [outTE, outTM] = DataFit(TE_dBm, TM_dBm, lambda_nm, name)
 
     windowSize = 250; % number of points in the moving window
     TE_smoothed = movmean(TE_dBm, windowSize);
-    figure
-    plot(lambda_nm, TE_dBm)
-    hold on
-    plot(lambda_nm, TE_smoothed, 'r-', 'LineWidth', 2)
-    hold off
-    xlabel('Wavelength (nm)')
-    ylabel('Power (dBm)')
-    legend('Raw Data', 'Moving Average')
-    title(strcat(name, ' TE'))
+    % figure
+    % plot(lambda_nm, TE_dBm)
+    % hold on
+    % plot(lambda_nm, TE_smoothed, 'r-', 'LineWidth', 2)
+    % hold off
+    % xlabel('Wavelength (nm)')
+    % ylabel('Power (dBm)')
+    % legend('Raw Data', 'Moving Average')
+    % title(strcat(name, ' TE'))
 
     TM_smoothed = movmean(TM_dBm, windowSize);
-    figure
-    plot(lambda_nm, TM_dBm)
-    hold on
-    plot(lambda_nm, TM_smoothed, 'r-', 'LineWidth', 2)
-    hold off
-    xlabel('Wavelength (nm)')
-    ylabel('Power (dBm)')
-    legend('Raw Data', 'Moving Average')
-    title(strcat(name, ' TM'))
+    % figure
+    % plot(lambda_nm, TM_dBm)
+    % hold on
+    % plot(lambda_nm, TM_smoothed, 'r-', 'LineWidth', 2)
+    % hold off
+    % xlabel('Wavelength (nm)')
+    % ylabel('Power (dBm)')
+    % legend('Raw Data', 'Moving Average')
+    % title(strcat(name, ' TM'))
 
     outTE = TE_smoothed;
     outTM = TM_smoothed;

@@ -9,6 +9,10 @@ clear all
 close all
 clc
 
+set(groot, 'DefaultAxesFontSize', 20);
+set(groot, 'DefaultTextFontSize', 24);
+set(groot, 'DefaultLegendFontSize', 18);
+
 % Set loss variables for TE and TM. The first column contains the lengths
 % of the three different wire waveguides (in mm). The second column is
 % initialized to zero (0) and eventually overwritten with the transmission
@@ -22,41 +26,41 @@ clc
 
 %% 3mm Waveguide (shortest)
 
-A = 'Jul_03_2026/WGs/short_1_890um/LOSS_SHORT_1_TE.dat';
+A = 'Sep_08_2026/wg/short-TE.dat';
 % A = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_SHORT_1_TE.dat';
 % A = 'Jul_03_2026/AIR/LOSS_SHORT_1_TE.dat';
 name = 'SHORT TE';
 compPow_short_TE = plotData(A, name);
 
-B = 'Jul_03_2026/WGs/short_1_890um/LOSS_SHORT_1_TM.dat';
+B = 'Sep_08_2026/wg/short-TM.dat';
 % B = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_SHORT_1_TM.dat';
 % B = 'Jul_03_2026/AIR/LOSS_SHORT_1_TM.dat';
 name = 'SHORT TM';
 compPow_short_TM = plotData(B, name);
 
-%% 3mm Waveguide (medium)
+%% 9mm Waveguide (medium)
 
-C = 'Jul_03_2026/WGs/med_1_2776um/LOSS_MED_1_TE.dat';
+C = 'Sep_08_2026/wg/med-TE.dat';
 % C = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_MED_1_TE.dat';
 % C = 'Jul_03_2026/AIR/LOSS_MED_1_TE.dat';
 name = 'MED TE';
 compPow_med_TE = plotData(C, name);
 
-D = 'Jul_03_2026/WGs/med_1_2776um/LOSS_MED_1_TM.dat';
+D = 'Sep_08_2026/wg/med-TM.dat';
 % D = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_MED_1_TM.dat';
 % D = 'Jul_03_2026/AIR/LOSS_MED_1_TM.dat';
 name = 'MED TM';
 compPow_med_TM = plotData(D, name);
 
-%% 3mm Waveguide (longest)
+%% 21mm Waveguide (longest)
 
-E = 'Jul_03_2026/WGs/long_1_6499um/LOSS_LONG_1_TE.dat';
+E = 'Sep_08_2026/wg/long-TE.dat';
 % E = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_LONG_1_TE.dat';
 % E = 'Jul_03_2026/AIR/LOSS_LONG_1_TE.dat';
 name = 'LONG TE';
 compPow_long_TE = plotData(E, name);
 
-F = 'Jul_03_2026/WGs/long_1_6499um/LOSS_LONG_1_TM.dat';
+F = 'Sep_08_2026/wg/long-TM.dat';
 % F = 'Jul_03_2026/SECOND_SILICA_CHIP/LOSS_LONG_1_TM.dat';
 % % F = 'Jul_03_2026/AIR/LOSS_LONG_1_TM.dat';
 name = 'LONG TM';
@@ -121,17 +125,33 @@ title('Insertion Loss')
 outputTE = [lambda_nm, lossesTE];
 outputTM = [lambda_nm, lossesTM];
 
-writematrix(outputTE, 'lossesTE_air.dat');
-writematrix(outputTM, 'lossesTM_air.dat');
+writematrix(outputTE, 'lossesTE_silica_AMF_0.dat');
+writematrix(outputTM, 'lossesTM_silica_AMF_0.dat');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [compPowdBm, wavelengths] = plotData(filename, name)
+
+    % System loss data
+    if (name(end-1:end) == 'TE')
+        SL = 'NRC_sys_losses/1460-1638-1mW-fiber-to-fiber-coupling.dat';
+        if ~isfile(SL)
+            error('openMyFile:FileNotFound', ...
+                'File does not exist: %s', SL);
+        end
+    
+        
+        SysLoss = importdata(SL);
+    else
+        % Set as -1dB for now, ideally will be replaced by measured data
+        SysLoss = ones(17801,2);
+    end
+
     A = importdata(filename);
     lambda_nm = A(:,1);
     power = A(:,2); % mW
     powerdB = 10*log10(power); % dBm
-    powerdB_comp = powerdB - (-1); % dBm - dB = dBm
+    powerdB_comp = powerdB + SysLoss(:,2); % dBm - dB = dBm
 
     % Plot wavelength sweep in dBm
     figure
